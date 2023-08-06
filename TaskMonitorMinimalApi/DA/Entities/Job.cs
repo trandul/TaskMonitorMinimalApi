@@ -1,9 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using TaskMonitorMinimalApi.DTO;
 using TaskMonitorMinimalApi.Enums;
 
-namespace TaskMonitorMinimalApi.Models
+namespace TaskMonitorMinimalApi.DA.Entities
 {
-    public class Objective
+    public class Job
     {
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public Guid Id { get; set; }
@@ -12,8 +13,17 @@ namespace TaskMonitorMinimalApi.Models
         public DateTime Expired { get; set; }
         public DateTime Completed { get; set; }
         public TaskPriority Priority { get; set; }
-        public ICollection<User>? Performers { get; set; }
+        public ICollection<User> Performers { get; set; }
         public Guid ManagerId { get; set; }
-        public User? Manager { get; set; }
+        public User Manager { get; set; }
+        public Job() { }
+        public Job(JobCreateDTO job)
+        {
+            Id = Guid.NewGuid();
+            Name = job.Name;
+            Created = job.Created;
+            Expired = job.Expired;
+            Priority = job.Priority;
+        }
     }
 }

@@ -1,14 +1,14 @@
 ﻿using TaskMonitorMinimalApi.Enums;
 
-namespace TaskMonitorMinimalApi.Models
+namespace TaskMonitorMinimalApi.DTO
 {
-    public class ObjectiveCreate
+    public class JobCreateDTO
     {
         public string Name { get; set; }
         public DateTime Created { get; set; }
         public DateTime Expired { get; set; }
         public TaskPriority Priority { get; set; }
-        public Guid[]? PerformersId { get; set; }
-        public Guid ManagerId { get; set; }
+        public string[]? PerformersLogins { get; set; }
+        public string ManagerLogin { get; set; }
     }
 }

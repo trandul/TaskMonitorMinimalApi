@@ -1,6 +1,6 @@
 ﻿using TaskMonitorMinimalApi.Enums;
 
-namespace TaskMonitorMinimalApi.Models
+namespace TaskMonitorMinimalApi.DA.Entities
 {
     public class Role
     {

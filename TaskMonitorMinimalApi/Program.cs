@@ -3,11 +3,14 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.IdentityModel;
 using Microsoft.EntityFrameworkCore;
 using TaskMonitorMinimalApi.DA.EF;
-using TaskMonitorMinimalApi.Models;
 using TaskMonitorMinimalApi.DA.Interfaces;
 using TaskMonitorMinimalApi.DA.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using TaskMonitorMinimalApi.Enums;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
+using TaskMonitorMinimalApi.DTO;
+using TaskMonitorMinimalApi.Endpoints;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("default");
@@ -20,11 +23,12 @@ builder.Services.AddSwaggerGen(c =>
         Version = "v1"
     });
 });
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme);
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
 builder.Services.AddAuthorization();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddDbContext<ApplicationContext>(options => options.UseSqlServer(connectionString));
-builder.Services.AddScoped<ObjectivesRepository>();
+builder.Services.AddScoped<JobsRepository>();
+builder.Services.AddScoped<AuthRepository>();
 builder.Services.AddScoped<UserRepository>();
 var app = builder.Build();
 app.UseAuthentication();
@@ -37,34 +41,15 @@ if (app.Environment.IsDevelopment())
                                     $"{builder.Environment.ApplicationName} v1"));
 }
 
-app.MapGet("/swag", () => "Hello Swagger!");
-
-app.MapGet("/", () => "Hello World!");
+app.MapGet("/", () => Results.Redirect("/swagger"));
 
 
 
+AuthEndpoints.Map(app);
+UserEndpoints.Map(app);
+JobEndpoints.Map(app);
 
 
-app.MapPost("/api/login", async (string? returnUrl, HttpContext context) =>
-{
 
-});
-app.MapPost("/api/register", async (string username, string password, [FromServices] UserRepository db) =>
-{
-    db.Register(username, password);
-});
-app.MapPost("/api/logout", async (string? returnUrl, HttpContext context) =>
-{
-    context.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-    return Results.Ok();
-});
 
-app.MapGet("/api/Task", async ([FromServices] ObjectivesRepository db) =>
-{
-    return Results.Json(db.GetAll());
-});
-app.MapPost("/api/Task", async (ObjectiveCreate objective, [FromServices] ObjectivesRepository db) =>
-{
-    db.Add(objective);
-});
 app.Run();

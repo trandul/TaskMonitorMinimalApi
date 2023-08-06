@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using TaskMonitorMinimalApi.Models;
+using TaskMonitorMinimalApi.DA.Entities;
 
 namespace TaskMonitorMinimalApi.DA.EF
 {
@@ -7,18 +7,18 @@ namespace TaskMonitorMinimalApi.DA.EF
     {
         public ApplicationContext(DbContextOptions<ApplicationContext> options)
             : base(options) { Database.EnsureCreated(); }
-        public DbSet<Objective> Objectives { get; set; }
+        public DbSet<Job> Jobs { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Role> Roles { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<User>()
-            .HasMany(s => s.AssignedObjectives)
+            .HasMany(s => s.AssignedJobs)
             .WithMany(c => c.Performers)
-            .UsingEntity(t=>t.ToTable("PerformersObjectives"));
+            .UsingEntity(t=>t.ToTable("PerformersJobs"));
             builder.Entity<User>()
-                .HasMany(s => s.ManagedObjectives)
+                .HasMany(s => s.ManagedJobs)
                 .WithOne(c => c.Manager)
                 .OnDelete(DeleteBehavior.NoAction);
 

@@ -1,11 +1,11 @@
-﻿using TaskMonitorMinimalApi.Models;
+﻿using TaskMonitorMinimalApi.DTO;
 
 namespace TaskMonitorMinimalApi.DA.Interfaces
 {
     public interface IAuth
     {
-        void Register(string username, string password);
-        void Login(string username, string password);
+        UserDTO? Register(UserRegisterDTO userRegister);
+        UserDTO? Login(string login, string password);
         void Logout();
     }
 }
